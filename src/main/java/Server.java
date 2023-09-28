@@ -10,16 +10,15 @@ import java.time.format.DateTimeFormatter;
 public class Server extends JFrame {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 300;
-    boolean start;
-    private File logger = new File("src/main/resources/log.txt");
+    public boolean start;
+    public File logger = new File("src/main/resources/log.txt");
     JButton btnStart, btnStop;
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+    JTextArea serverChatFeild;
+    public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
     Server() throws IOException {
-
         File icon = new File("src/main/resources/img/icon.jpeg");
         this.setIconImage(ImageIO.read(icon));
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
@@ -31,7 +30,7 @@ public class Server extends JFrame {
         JPanel buttonServer = new JPanel(new GridLayout(1, 2));
         buttonServer.add(btnStart);
         buttonServer.add(btnStop);
-        JTextArea serverChatFeild = new JTextArea();
+        serverChatFeild = new JTextArea();
         serverChatFeild.setEditable(false);
         serverChat.add(serverChatFeild);
         serverChat.add(buttonServer, BorderLayout.SOUTH);
@@ -64,7 +63,7 @@ public class Server extends JFrame {
         });
     }
 
-    private void writeLog(JTextArea area) {
+    public void writeLog(JTextArea area) {
         try (FileOutputStream writerLog = new FileOutputStream(logger, true)) {
             String textLog = String.valueOf(" " + area.getText() + "\n");
             LocalDateTime now = LocalDateTime.now();
