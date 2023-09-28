@@ -7,16 +7,16 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Server extends JFrame {
+public class ServerChat extends JFrame {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 300;
-    public boolean start;
+    public boolean start = false;
     public File logger = new File("src/main/resources/log.txt");
     JButton btnStart, btnStop;
-    JTextArea serverChatFeild;
+    public JTextArea serverChatFeild;
     public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-    Server() throws IOException {
+    ServerChat() throws IOException {
         File icon = new File("src/main/resources/img/icon.jpeg");
         this.setIconImage(ImageIO.read(icon));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,6 +63,12 @@ public class Server extends JFrame {
         });
     }
 
+
+    public void sendMessage (String message) {
+        this.serverChatFeild.setText(message);
+        writeLog(serverChatFeild);
+    }
+
     public void writeLog(JTextArea area) {
         try (FileOutputStream writerLog = new FileOutputStream(logger, true)) {
             String textLog = String.valueOf(" " + area.getText() + "\n");
@@ -75,4 +81,5 @@ public class Server extends JFrame {
             new Warning("Файл не найден");
         }
     }
+
 }

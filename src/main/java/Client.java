@@ -1,9 +1,11 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+
 
 public class Client extends JFrame {
     private static final int WIDTH = 800;
@@ -14,6 +16,8 @@ public class Client extends JFrame {
     JTextField fieldIp, fieldPort, fieldLoggin, fieldMessage;
     JPasswordField fieldPasword;
     JTextArea clientChatFeild;
+    String login;
+    private ServerChat server = new ServerChat();
 
 
     Client() throws IOException {
@@ -34,33 +38,60 @@ public class Client extends JFrame {
         fieldPasword = new JPasswordField();
         fieldMessage = new JTextField();
         clientChatFeild = new JTextArea();
-
-        JPanel pnlLoggin = new JPanel(new GridLayout(2,3));
-        JPanel pnlMessage = new JPanel(new BorderLayout());
-        fieldIp.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
-        pnlLoggin.add(fieldIp);
-        fieldPort.setPreferredSize(new Dimension(FIELD_WIDTH,FIELD_HIGHT));
-        pnlLoggin.add(fieldPort);
-        JLabel nothing = new JLabel("");
-        pnlLoggin.add(nothing);
-
-        pnlLoggin.add(fieldLoggin, BorderLayout.LINE_START);
-        fieldLoggin.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
-        pnlLoggin.add(fieldPasword, BorderLayout.CENTER);
-        fieldPasword.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
-        pnlLoggin.add(btnLogin, BorderLayout.LINE_END);
-        btnLogin.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
-        pnlMessage.add(fieldMessage);
-        add(pnlLoggin, BorderLayout.PAGE_START);
         clientChatFeild.setEditable(false);
+        clientChatFeild.setWrapStyleWord(true);
+        clientChatFeild.setLineWrap(true);
+        JPanel pnlLoggin = createLoginPanel();
+        add(pnlLoggin, BorderLayout.PAGE_START);
         add(clientChatFeild);
-
-        btnSend.setPreferredSize(new Dimension(200, 30));
-        pnlMessage.add(fieldMessage);
-        pnlMessage.add(btnSend, BorderLayout.LINE_END);
-
-        add(pnlMessage, BorderLayout.SOUTH);
+        add(createPanelSendMessage(), BorderLayout.SOUTH);
         setVisible(true);
 
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pnlLoggin.setVisible(false);
+                login = fieldLoggin.getText();
+            }
+        }
+        );
+        btnSend.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clientChatFeild.setText(login + " пишет: " + fieldMessage.getText() + "\n");
+
+                if (server.start) {
+                    server.sendMessage(login + " пишет: " + fieldMessage.getText() + "\n");
+                }else {
+                    clientChatFeild.setText("Сервер упал");
+                }
+                fieldMessage.setText("");
+            }
+        }
+        );
+    }
+    private JPanel createLoginPanel(){
+        JPanel panel = new JPanel(new GridLayout(2, 3));
+        fieldIp.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
+        panel.add(fieldIp);
+        fieldPort.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
+        panel.add(fieldPort);
+        JLabel nothing = new JLabel("");
+        panel.add(nothing);
+        panel.add(fieldLoggin, BorderLayout.LINE_START);
+        fieldLoggin.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
+        panel.add(fieldPasword, BorderLayout.CENTER);
+        fieldPasword.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
+        panel.add(btnLogin, BorderLayout.LINE_END);
+        btnLogin.setPreferredSize(new Dimension(FIELD_WIDTH, FIELD_HIGHT));
+        return panel;
+    }
+    private JPanel createPanelSendMessage(){
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(fieldMessage);
+        btnSend.setPreferredSize(new Dimension(200, 30));
+        panel.add(fieldMessage);
+        panel.add(btnSend, BorderLayout.LINE_END);
+        return panel;
     }
 }
