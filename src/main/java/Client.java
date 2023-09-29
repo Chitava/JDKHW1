@@ -17,7 +17,7 @@ public class Client extends JFrame {
     JPasswordField fieldPasword;
     JTextArea clientChatFeild;
     String login;
-    private ServerChat server = new ServerChat();
+//    private ServerChat server = new ServerChat();
 
 
     Client() throws IOException {
@@ -58,10 +58,10 @@ public class Client extends JFrame {
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clientChatFeild.setText(login + " пишет: " + fieldMessage.getText() + "\n");
+                clientChatFeild.setText(login + " пишет: " + fieldMessage.getText());
 
-                if (server.start) {
-                    server.sendMessage(login + " пишет: " + fieldMessage.getText() + "\n");
+                if (ServerChat.start) {
+                    ServerChat.sendMessage(login + " пишет: " + fieldMessage.getText() + "\n");
                 }else {
                     clientChatFeild.setText("Сервер упал");
                 }

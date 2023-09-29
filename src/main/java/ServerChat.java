@@ -10,11 +10,13 @@ import java.time.format.DateTimeFormatter;
 public class ServerChat extends JFrame {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 300;
-    public boolean start = false;
-    public File logger = new File("src/main/resources/log.txt");
+    public static boolean start = false;
+    public static File logger = new File("src/main/resources/log.txt");
     JButton btnStart, btnStop;
-    public JTextArea serverChatFeild;
-    public DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+    public static JTextArea serverChatFeild;
+    public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+    Client client = new Client();
+
 
     ServerChat() throws IOException {
         File icon = new File("src/main/resources/img/icon.jpeg");
@@ -42,6 +44,7 @@ public class ServerChat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!start) {
                     serverChatFeild.setText("StartServer");
+                    setTitle("ServerChat Server is Running");
                     start = true;
                 } else {
                     serverChatFeild.setText("Server is running");
@@ -54,6 +57,7 @@ public class ServerChat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (start) {
                     serverChatFeild.setText("Server is Stoped");
+                    setTitle("ServerChat Server is Stopped");
                     start = false;
                 } else {
                     serverChatFeild.setText("Server is not running now");
@@ -63,13 +67,11 @@ public class ServerChat extends JFrame {
         });
     }
 
-
-    public void sendMessage (String message) {
-        this.serverChatFeild.setText(message);
+    public static void sendMessage(String message) {
+        serverChatFeild.setText(message);
         writeLog(serverChatFeild);
     }
-
-    public void writeLog(JTextArea area) {
+    public static void writeLog(JTextArea area) {
         try (FileOutputStream writerLog = new FileOutputStream(logger, true)) {
             String textLog = String.valueOf(" " + area.getText() + "\n");
             LocalDateTime now = LocalDateTime.now();
