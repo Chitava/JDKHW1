@@ -1,4 +1,5 @@
 package hw.server;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,7 @@ public class ServerChatView extends JFrame {
 
     public ServerChatView(Server server) throws IOException {
         Logger logger = new Logger();
+        ServerMessenger sendMessageToClient = new ServerMessenger();
         File icon = new File("src/main/resources/img/icon.jpeg");
         this.setIconImage(ImageIO.read(icon));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,7 +42,6 @@ public class ServerChatView extends JFrame {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (!server.isRun()) {
                     serverChatFeild.setText("Server is started");
                     setTitle("Server running");
@@ -48,9 +49,12 @@ public class ServerChatView extends JFrame {
                     server.setStatus("server is running");
                 } else {
                     serverChatFeild.setText("Server is running");
+
                 }
                 logger.serverLog(serverChatFeild.getText());
+                if (server.clients.size() > 0){sendMessageToClient.sendToClient("Server is running", server.clients);}
 
+                sendMessageToClient.sendToClient("Server is running",server.clients);
             }
         });
         btnStop.addActionListener(new ActionListener() {
@@ -65,8 +69,13 @@ public class ServerChatView extends JFrame {
                     serverChatFeild.setText("Server is not running now");
                 }
                 logger.serverLog(serverChatFeild.getText());
+                sendMessageToClient.sendToClient("Server is stoped",server.clients);
 
             }
         });
+    }
+
+    public void setServerChatFeild(String message) {
+        this.serverChatFeild.setText(message);
     }
 }
