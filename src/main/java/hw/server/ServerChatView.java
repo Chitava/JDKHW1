@@ -1,30 +1,28 @@
+package hw.server;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ServerChat extends JFrame {
+public class ServerChatView extends JFrame {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 300;
     public static boolean start = false;
-    public static File logger = new File("src/main/resources/log.txt");
     JButton btnStart, btnStop;
-    public static JTextArea serverChatFeild;
+    JTextArea serverChatFeild;
     public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
-    Client client = new Client();
 
-
-    ServerChat() throws IOException {
+    public ServerChatView(Server server) throws IOException {
+        Logger logger = new Logger();
         File icon = new File("src/main/resources/img/icon.jpeg");
         this.setIconImage(ImageIO.read(icon));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
-        setTitle("ServerChat");
+        setTitle("hw.server.ServerChat");
         setResizable(false);
         btnStart = new JButton("Start Server");
         btnStop = new JButton("Stop Server");
@@ -42,46 +40,33 @@ public class ServerChat extends JFrame {
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!start) {
-                    serverChatFeild.setText("StartServer");
-                    setTitle("ServerChat Server is Running");
-                    start = true;
+
+                if (!server.isRun()) {
+                    serverChatFeild.setText("Server is started");
+                    setTitle("Server running");
+                    server.setRun(true);
+                    server.setStatus("server is running");
                 } else {
                     serverChatFeild.setText("Server is running");
                 }
-                writeLog(serverChatFeild);
+                logger.serverLog(serverChatFeild.getText());
+
             }
         });
         btnStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (start) {
-                    serverChatFeild.setText("Server is Stoped");
-                    setTitle("ServerChat Server is Stopped");
-                    start = false;
+                if (server.isRun()) {
+                    serverChatFeild.setText("Server is stoped");
+                    setTitle("Server stopped");
+                    server.setRun(false);
+                    server.setStatus("server is not run");
                 } else {
                     serverChatFeild.setText("Server is not running now");
                 }
-                writeLog(serverChatFeild);
+                logger.serverLog(serverChatFeild.getText());
+
             }
         });
     }
-
-    public static void sendMessage(String message) {
-        serverChatFeild.setText(message);
-        writeLog(serverChatFeild);
-    }
-    public static void writeLog(JTextArea area) {
-        try (FileOutputStream writerLog = new FileOutputStream(logger, true)) {
-            String textLog = String.valueOf(" " + area.getText() + "\n");
-            LocalDateTime now = LocalDateTime.now();
-            byte[] buffer = dateFormatter.format(now).getBytes();
-            writerLog.write(buffer, 0, buffer.length);
-            buffer = textLog.getBytes();
-            writerLog.write(buffer, 0, buffer.length);
-        } catch (IOException ex) {
-            new Warning("Файл не найден");
-        }
-    }
-
 }

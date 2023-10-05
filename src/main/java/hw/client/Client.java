@@ -1,3 +1,4 @@
+package hw.client;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class Client extends JFrame {
     JPasswordField fieldPasword;
     JTextArea clientChatFeild;
     String login;
-//    private ServerChat server = new ServerChat();
+//    private hw.server.ServerChat server = new hw.server.ServerChat();
 
 
     Client() throws IOException {
@@ -60,13 +61,13 @@ public class Client extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 clientChatFeild.setText(login + " пишет: " + fieldMessage.getText());
 
-                if (ServerChat.start) {
-                    ServerChat.sendMessage(login + " пишет: " + fieldMessage.getText() + "\n");
-                }else {
-                    clientChatFeild.setText("Сервер упал");
+//                if (ServerChatView.start) {
+//                    ServerChatView.sendMessage(login + " пишет: " + fieldMessage.getText() + "\n");
+//                }else {
+//                    clientChatFeild.setText("Сервер упал");
                 }
-                fieldMessage.setText("");
-            }
+//                fieldMessage.setText("");
+//            }
         }
         );
     }
